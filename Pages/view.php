@@ -65,6 +65,7 @@ if (empty($_SESSION['user_id'])){
             echo '
             <form method="post" action="">
             <button type="submit" name="deleteButton" class="btn btn-primary">Delete</button>
+            </form>
             </div> </div> </div>
             ';
         }
