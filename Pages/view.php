@@ -62,12 +62,18 @@ if (empty($_SESSION['user_id'])){
                     <h5 class="card-title">' . $title . '</h5>
                     <p class="card-text">' . $contents . '</p>
                     <p class="card-text">' . $due_date . '</p>';
+            echo '
+            <form method="post" action="">
+            <button type="submit" name="deleteButton" class="btn btn-primary">Delete</button>
+            </div> </div> </div>
+            ';
         }
             ?>
-            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <button type="submit" name="deleteButton" class="btn btn-primary">Click Me</button>
-            </form>
     </div>
 </div>
 </body>
 </html>
+<?php
+if (isset($_POST['deleteButton'])){
+    echo 'pog champ';
+}
