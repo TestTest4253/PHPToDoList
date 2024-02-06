@@ -76,5 +76,5 @@ if (isset($_POST['submit'])){
     echo 'Whoops you are an issue!';
   }
 }
-
+?>
 

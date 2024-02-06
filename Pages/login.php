@@ -54,14 +54,14 @@ if (isset($_POST['submit'])){
 
     if($stmt->execute()){
         $result = $stmt->get_result();
-        $array = $result->fetch_assoc();//['password'];
+        $array = $result->fetch_assoc();
         $storedPassword = $array['password'];
         $user_id = $array['user_id'];
         if (password_verify($password, $storedPassword)){
-            echo '<p>Welcome '.$username.'</p>';
             $_SESSION['user_id'] = $user_id;
             header('location:home.php');
         }
     }
 }
+?>
 
