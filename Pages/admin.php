@@ -59,9 +59,12 @@ if (empty($_SESSION['user_id']) && !($_SESSION['admin'])){
             <label for="deleteUserMenu" class="form-label">Select Option:</label>
             <select class="form-select" aria-label="Select option" id="deleteUserMenu" name="deleteUserMenu">
                 <option value="">Choose...</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+                <?php
+                $users = active_users();
+                foreach($users as $user){
+                    echo '<option value="'.$user.'">'.$user.'</option>';
+                }
+                ?>
             </select>
             <input type="hidden" name="form_id" value="deleteUser">
             <button type="submit" class="btn btn-primary mt-3" name="submit">Submit</button>
@@ -74,9 +77,7 @@ if (empty($_SESSION['user_id']) && !($_SESSION['admin'])){
             <label for="addUserMenu" class="form-label">Select Option:</label>
             <select class="form-select" aria-label="Select option" id="addUserMenu" name="addUserMenu">
                 <option value="">Choose...</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+
             </select>
             <input type="hidden" name="form_id" value="addUser">
             <button type="submit" class="btn btn-primary mt-3" name="submit">Submit</button>
@@ -95,7 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         switch ($formID){
             case 'deleteUser':
                 $username = $_POST['deleteUserMenu'];
-                echo $username;
                 $users = active_users();
                 echo implode(" ",$users);
                 break;
