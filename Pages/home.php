@@ -50,6 +50,11 @@ session_start()
                     <a class="nav-link" href="logout.php">Log Out</a>
                 </li>
                 ';
+                if (!empty($_SESSION['admin'])) {
+                    if ($_SESSION['admin']) {
+                        echo '<li class="nav-item"> <a class="nav-link" href="admin.php">Admin</a>';
+                    }
+                }
             }
             ?>
         </ul>

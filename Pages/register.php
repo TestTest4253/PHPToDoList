@@ -71,7 +71,7 @@ if (isset($_POST['submit'])){
     echo 'Your error is '.$e;
   }
   if ($stmt->execute()){
-    echo '<p>Your account has been created!</p>';
+    header('location:home.php');
   }else{
     echo 'Whoops you are an issue!';
   }

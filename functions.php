@@ -35,3 +35,54 @@ function collect_tasks($server_name, $sql_user, $password){
     }
     return $tasks;
 }
+
+function is_admin($user_id){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_select';
+    $password = 'P_k(x[1!gDObxh7-';
+
+    $conn = new mysqli($server_name, $sql_user, $password);
+
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+    $sql = 'SELECT Admin FROM credentialsbt.methodone WHERE credentialsbt.methodone.user_id = ?';
+    try{
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $user_id);
+    }catch (Exception $e){
+        echo 'Your error is '.$e;
+    }
+    if ($stmt->execute()){
+        $results = $stmt->get_result();
+        $row = $results->fetch_assoc();
+        $data = $row['Admin'];
+    }
+    return $data;
+}
+
+function active_users(){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_select';
+    $password = 'P_k(x[1!gDObxh7-';
+    $active_users = [];
+    $conn = new mysqli($server_name, $sql_user, $password);
+
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+    $sql = 'SELECT username FROM credentialsbt.methodone WHERE credentialsbt.methodone.deleted = 0';
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt->execute()){
+        $results = $stmt->get_result();
+        $rows = $results->fetch_all();
+
+        $length = count($rows);
+        for ($x=0;$x<$length;$x++){
+            $active_users[] = $rows[$x][0];
+        }
+        return $active_users;
+    }
+    return 0;
+}
