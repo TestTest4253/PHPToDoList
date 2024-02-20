@@ -86,3 +86,46 @@ function active_users(){
     }
     return 0;
 }
+
+function update_permission($newPermissionLevel, $userId){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_update';
+    $password = '*j8hBQt3@i-m7ynQ';
+
+    $conn = new mysqli($server_name, $sql_user, $password);
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+    $sql = 'UPDATE credentialsbt.methodone SET Admin = ? WHERE user_id = ?';
+    if (!$stmt = $conn->prepare($sql)) {
+        die('Preparation Error: ' . $conn->error);
+    }
+    if (!$stmt->bind_param('ii', $newPermissionLevel, $userId)) {
+        die('Binding Error: ' . $stmt->error);
+    }
+    if (!$stmt->execute()) {
+        die('Execution Error: ' . $stmt->error);
+    }
+    return 0;
+}
+
+function usernameToID($username){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_select';
+    $password = 'P_k(x[1!gDObxh7-';
+
+    $conn = new mysqli($server_name, $sql_user, $password);
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+
+    $sql = 'SELECT user_id from credentialsbt.methodone where username = ?';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $username);
+    if ($stmt->execute()) {
+        $results = $stmt->get_result();
+        $rows = $results->fetch_assoc();
+        return $rows['user_id'];
+    }
+    return 0;
+}
