@@ -62,17 +62,20 @@ if (empty($_SESSION['user_id']) && !($_SESSION['admin'])){
                 <div class="card">
                     <div class="card-header">Delete User</div>
                     <div class="card-body">
-                        <form action="" method="post">
-                            <select class="form-select" aria-label="Select option" id="deleteUserMenu" name="deleteUserMenu">
-                                <option value="">Choose...</option>
-                                <?php
-                                $users = active_users();
-                                foreach($users as $user){
-                                    echo '<option value="'.$user.'">'.$user.'</option>';
-                                }
-                                ?>
-                            </select>
+                        <form method="POST">
+                            <div class="form-group mb-3">
+                                <select class="form-select" aria-label="Select option" id="deleteUserMenu" name="deleteUserMenu">
+                                    <option value="">Choose...</option>
+                                    <?php
+                                    $users = active_users();
+                                    foreach($users as $user){
+                                        echo '<option value="'.$user.'">'.$user.'</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                             <input type="hidden" name="form_id" value="deleteUser">
+                            <button type="submit" class="btn btn-primary" name="submit">Delete User</button>
                         </form>
                     </div>
                 </div>
@@ -82,7 +85,20 @@ if (empty($_SESSION['user_id']) && !($_SESSION['admin'])){
                 <div class="card">
                     <div class="card-header">Add User</div>
                     <div class="card-body">
-                        <form action="" method="post">
+                        <form method="POST">
+                            <div class="form-group mb-3">
+                                <select class="form-select" aria-label="Select option" id="addUserMenu" name="addUserMenu">
+                                    <option value="">Choose...</option>
+                                    <?php
+                                    $users = inactive_users();
+                                    foreach($users as $user){
+                                        echo '<option value="'.$user.'">'.$user.'</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <input type="hidden" name="form_id" value="addUser">
+                            <button type="submit" class="btn btn-primary" name="submit">Add User</button>
                         </form>
                     </div>
                 </div>
@@ -126,11 +142,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     if (isset($_POST['submit'])) {
         switch ($formID){
             case 'deleteUser':
-                $username = $_POST['deleteUserMenu'];
+                $userId = (int) usernameToID($_POST['deleteUserMenu']);
+                try{
+                    deleteUser($userId);
+                    $_SESSION['update_message_type'] = "success";
+                    $_SESSION['update_message'] = "User Deleted!";
+                }catch (Exception $e){
+                    echo 'There was an error '. $e;
+                    $_SESSION['update_message_type'] = "danger";
+                    $_SESSION['update_message'] = "User failed to delete!";
+                }
                 break;
             case 'addUser':
-                $username = $_POST['addUserMenu'];
-                echo $username;
+                $userId = (int) usernameToID($_POST['addUserMenu']);
+                try{
+                    addUser($userId);
+                    $_SESSION['update_message_type'] = "success";
+                    $_SESSION['update_message'] = "User Added!";
+                }catch (Exception $e){
+                    echo 'There was an error '. $e;
+                    $_SESSION['update_message_type'] = "danger";
+                    $_SESSION['update_message'] = "User failed to be added!";
+                }
                 break;
             case 'modifyUser':
                 if (isset($_POST['user_id']) && isset($_POST['permission_level'])) {
@@ -142,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $_SESSION['update_message'] = "Permissions updated successfully!";
                     }catch(Exception $e){
                         echo 'There was an error '. $e;
-                        $_SESSION['update_message_type'] = "success";
+                        $_SESSION['update_message_type'] = "danger";
                         $_SESSION['update_message'] = "Permissions failed to update!";
                     }
                 }

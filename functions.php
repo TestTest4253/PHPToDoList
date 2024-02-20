@@ -87,6 +87,76 @@ function active_users(){
     return 0;
 }
 
+function inactive_users(){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_select';
+    $password = 'P_k(x[1!gDObxh7-';
+    $active_users = [];
+    $conn = new mysqli($server_name, $sql_user, $password);
+
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+    $sql = 'SELECT username FROM credentialsbt.methodone WHERE credentialsbt.methodone.deleted = 1';
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt->execute()){
+        $results = $stmt->get_result();
+        $rows = $results->fetch_all();
+
+        $length = count($rows);
+        for ($x=0;$x<$length;$x++){
+            $active_users[] = $rows[$x][0];
+        }
+        return $active_users;
+    }
+    return 0;
+}
+
+function deleteUser($userId){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_update';
+    $password = '*j8hBQt3@i-m7ynQ';
+
+    $conn = new mysqli($server_name, $sql_user, $password);
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+    $sql = 'UPDATE credentialsbt.methodone SET deleted = 1 WHERE user_id = ?';
+    if (!$stmt = $conn->prepare($sql)) {
+        die('Preparation Error: ' . $conn->error);
+    }
+    if (!$stmt->bind_param('i',$userId)) {
+        die('Binding Error: ' . $stmt->error);
+    }
+    if (!$stmt->execute()) {
+        die('Execution Error: ' . $stmt->error);
+    }
+    return 0;
+}
+
+function addUser($userId){
+    $server_name = 'localhost';
+    $sql_user = 'webapp_update';
+    $password = '*j8hBQt3@i-m7ynQ';
+
+    $conn = new mysqli($server_name, $sql_user, $password);
+    if ($conn-> connect_error){
+        die('Connection Failed: '.$conn->connect_error);
+    }
+    $sql = 'UPDATE credentialsbt.methodone SET deleted = 0 WHERE user_id = ?';
+    if (!$stmt = $conn->prepare($sql)) {
+        die('Preparation Error: ' . $conn->error);
+    }
+    if (!$stmt->bind_param('i',$userId)) {
+        die('Binding Error: ' . $stmt->error);
+    }
+    if (!$stmt->execute()) {
+        die('Execution Error: ' . $stmt->error);
+    }
+    return 0;
+}
+
 function update_permission($newPermissionLevel, $userId){
     $server_name = 'localhost';
     $sql_user = 'webapp_update';
