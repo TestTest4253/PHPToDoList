@@ -15,7 +15,7 @@ session_start()
             padding: 20px;
         }
         body {
-            background: darkslategray;
+            background: #f0f0f0; /* Softer background */
         }
     </style>
 
@@ -45,6 +45,9 @@ session_start()
                 echo '
                 <li class="nav-item">
                     <a class="nav-link" href="view.php">View Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="create.php">Create Task</a>
                 </li>
                 <li class=nav-item">
                     <a class="nav-link" href="logout.php">Log Out</a>
