@@ -6,13 +6,18 @@ if (empty($_SESSION['user_id'])) {
     header('location:home.php');
 }
 
+if (!empty($_SESSION['firstLogon'])) {
+    if ($_SESSION['firstLogon'] == 1) {
+        header('location:change_password.php');
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $taskId = (int) $_POST['task_id'];
+    $taskId = (int)$_POST['task_id'];
     if (isset($_POST['deleteButton'])) {
         delete_task($taskId);
         header('refresh:0.1');
     }
-
 }
 ?>
 <!DOCTYPE html>
@@ -50,9 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-                <a class="nav-link" href="view.php">View Tasks</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="create.php">Create Task</a>
             </li>
             <li class=nav-item">
@@ -74,13 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = IDtoUsername($task[0]);
             $title = $task[2];
             $contents = $task[3];
-            $due_date = $task[4];
-            $completed = $task[5];
+            $rawDate = $task[4];
+            $due_date = date('l d F Y',strtotime($task[4]));
+            $status = $task[6];
             echo '<div class="col-sm-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm'; if($status == 'Done'){echo ' bg-success';} echo '">
                 <div class="card-body">
                     <div class="username-container">' . $username . '</div>
-                    <h5 class="card-title">' . $title . '</h5>
+                    <h5 class="card-title">' . $title .' - '.$status . '</h5>
                     <p class="card-text">' . $contents . '</p>
                     <p class="card-text">' . $due_date . '</p>';
             echo '
@@ -89,6 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="hidden" name="task_id" value="'.$task[1].'">
             <input type="hidden" name="title" value="'.$title.'">
             <input type="hidden" name="contents" value="'.$contents.'">
+            <input type="hidden" name="date" value="'.$rawDate.'">
+            <input type="hidden" name="status" value="'.$status.'">
             <button type="submit" name="editButton" class="btn btn-primary">Edit</button>
             </form>
             <form method="post" action="">
@@ -115,23 +120,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $username = IDtoUsername($task[0]);
                 $title = $task[2];
                 $contents = $task[3];
-                $due_date = $task[4];
+                $due_date = date('l d F Y',strtotime($task[4]));
+                $rawDate = $task[4];
                 $completed = $task[5];
+                $status = $task[6];
                 echo '<div class="col-sm-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
                     <div class="username-container">' . $username . '</div>
-                    <h5 class="card-title">' . $title . '</h5>
+                    <h5 class="card-title">' . $title .' - '.$status . '</h5>
                     <p class="card-text">' . $contents . '</p>
                     <p class="card-text">' . $due_date . '</p>
             ';
-            if ($_SESSION['admin']) {
+            if (isset($_SESSION['admin'])) {
                 echo '
                 <div class="button-container"> 
                 <form method="post" action="edit.php">
                 <input type="hidden" name="task_id" value="'.$task[1].'">
                 <input type="hidden" name="title" value="'.$title.'">
                 <input type="hidden" name="contents" value="'.$contents.'">
+                <input type="hidden" name="date" value="'.$rawDate.'">
+                <input type="hidden" name="status" value="'.$status.'">
                 <button type="submit" name="editButton" class="btn btn-primary">Edit</button>
                 </form>
                 <form method="post" action="">

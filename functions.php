@@ -8,13 +8,13 @@ function connect_db($server, $user, $pass, $database){
     return $conn;
 }
 
-function create_task($user, $title, $contents, $date): int
+function create_task($user, $title, $contents, $date, $status): int
 {
     $conn = connect_db('localhost','webapp_insert', 'TE1rrJ0M4tKD!x4I','credentialsbt');
-    $sql = 'INSERT INTO tasks(User_ID, Title, Contents, Due_Date, Completed, deleted, priority) VALUES (?,?,?,?,0,0,0)';
+    $sql = 'INSERT INTO tasks(User_ID, Title, Contents, Due_Date, Completed, deleted, priority) VALUES (?,?,?,?,0,0,?)';
     try{
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('isss',$user, $title, $contents, $date);
+        $stmt->bind_param('issss',$user, $title, $contents, $date,$status);
     }catch (Exception $e){
         echo 'Your error is '.$e;
     }
@@ -25,9 +25,21 @@ function create_task($user, $title, $contents, $date): int
     }
 }
 
-function edit_task(): int
+function edit_task($contents, $title, $date, $status, $user, $task): int
 {
     $conn = connect_db('localhost','webapp_update','*j8hBQt3@i-m7ynQ', 'credentialsbt');
+    $sql = 'UPDATE tasks SET Contents = ?,Title = ?, Due_Date = ?, User_ID = ?, priority = ? WHERE Task_ID=?';
+    try{
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('sssisi', $contents, $title, $date, $user, $status, $task);
+    }catch (Exception $e){
+        echo 'Your error is '.$e;
+    }
+    if ($stmt->execute()){
+        return 1;
+    } else{
+        return 0;
+    }
 }
 function delete_task($remove_ID): int
 {
@@ -49,7 +61,7 @@ function collect_tasks(): array
 {
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
     $user_id = $_SESSION['user_id'];
-    $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 AND methodone.user_id = ?;';
+    $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed, priority FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 AND methodone.user_id = ? ORDER BY tasks.priority DESC;';
     try{
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $user_id);
@@ -68,7 +80,7 @@ function all_tasks(): array
 {
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
     $user_id = $_SESSION['user_id'];
-    $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 AND methodone.user_id != ?;';
+    $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed, priority FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 AND methodone.user_id != ? ORDER BY tasks.priority DESC;';
     try{
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $user_id);
@@ -99,6 +111,62 @@ function is_admin($user_id){
         $data = $row['Admin'];
     }
     return $data;
+}
+
+function firstLogon($userId): int{
+    $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
+    $sql = 'SELECT firstLogon FROM methodone WHERE methodone.user_id = ?';
+    try{
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $userId);
+    }catch (Exception $e){
+        echo 'Your error is '.$e;
+    }
+    if ($stmt->execute()){
+        $results = $stmt->get_result();
+        $row = $results->fetch_assoc();
+        $data = $row['firstLogon'];
+    }
+    return $data;
+}
+
+function checkPassword($userId,$password): int{
+    $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
+    $sql = 'SELECT password from credentialsbt.methodone WHERE user_id = ?';
+    try{
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $userId);
+    }catch(Exception $e){
+        echo 'Your error is '.$e;
+    }
+
+    if($stmt->execute()){
+        $result = $stmt->get_result();
+        $array = $result->fetch_assoc();
+        $storedPassword = $array['password'];
+        if (password_verify($password, $storedPassword)){
+            return 1;
+        } else{
+            return 0;
+        }
+    }
+}
+
+function submitPassword($userId, $password): int
+{
+    $conn = connect_db('localhost','webapp_update','*j8hBQt3@i-m7ynQ', 'credentialsbt');
+    $sql = 'UPDATE methodone SET password = ? WHERE user_id = ?';
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+    try{
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('si',$hashed_password, $userId);
+    }catch (Exception $e){
+        echo 'Your error is '.$e;
+    }
+    if ($stmt->execute()){
+        return 1;
+    }
+    return 0;
 }
 
 function active_users(): int|array

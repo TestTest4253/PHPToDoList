@@ -1,5 +1,11 @@
 <?php
-session_start()
+session_start();
+include('../functions.php');
+if (!empty($_SESSION['firstLogon'])) {
+    if ($_SESSION['firstLogon'] == 1) {
+        header('location:change_password.php');
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +23,10 @@ session_start()
         body {
             background: #f0f0f0; /* Softer background */
         }
+        .video-container{
+            display:flex;
+            justify-content: center;
+        }
     </style>
 
 </head>
@@ -32,32 +42,27 @@ session_start()
             <?php
             if (empty($_SESSION['user_id'])){
                 echo '
-                <li class="nav-item">
-                    <a class="nav-link" href="register.php">Register</a>
-                </li>
-
-
+                
                 <li class="nav-item">
                     <a class="nav-link" href="login.php">Login</a>
-                </li>'
-                ;
+                </li>';
             }else{
-                echo '
-                <li class="nav-item">
-                    <a class="nav-link" href="view.php">View Tasks</a>
-                </li>
+                echo'
                 <li class="nav-item">
                     <a class="nav-link" href="create.php">Create Task</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="view.php">View Tasks</a>
+                </li>';
+                if (!empty($_SESSION['admin'])) {
+                    echo '<li class="nav-item"> <a class="nav-link" href="admin.php">Admin</a>';
+                };
+                echo'
                 <li class=nav-item">
                     <a class="nav-link" href="logout.php">Log Out</a>
                 </li>
                 ';
-                if (!empty($_SESSION['admin'])) {
-                    if ($_SESSION['admin']) {
-                        echo '<li class="nav-item"> <a class="nav-link" href="admin.php">Admin</a>';
-                    }
-                }
+
             }
             ?>
         </ul>
@@ -65,7 +70,13 @@ session_start()
 </nav>
 
 <div class="container">
-    <h1>Welcome!</h1>
+    <h1 style="text-align: center">Welcome<?php if (!empty($_SESSION['user_id'])){echo ' '.IDtoUsername($_SESSION['user_id']);} ?>!</h1>
+    <?php
+    if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == 14){
+        echo '<p class = "video-container"><iframe width="560" height="315" src="https://www.youtube.com/embed/MtN1YnoL46Q" title="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe></p>';
+    }
+    echo '<pre>' . var_dump($_SESSION) . '</pre>'; ?>
+    ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

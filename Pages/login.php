@@ -4,36 +4,6 @@ session_unset();
 include('../functions.php');
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-
-        body {
-            background: darkslategray;
-        }
-    </style>
-    <title>30061640</title>
-</head>
-<html>
-<body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-<h2>Login Form</h2>
-
-<form action="" method="post">
-    <div class="mb-3">
-        <label for="username" class="form-label">Username:</label>
-        <input type="text" class="form-control" id="username" name="username" value="">
-    </div>
-    <div class="mb-3">
-        <label for="pword" class="form-label">Password:</label>
-        <input type="password" class="form-control" id="pword" name="pword" value="">
-    </div>
-    <input type="submit" class='btn btn-primary' value="Submit" name="submit">
-</form>
-</body>
-</html>
 <?php
 $server_name = 'localhost';
 $sql_user = 'webapp_select';
@@ -64,9 +34,85 @@ if (isset($_POST['submit'])){
             if (is_admin($user_id) == 1){
                 $_SESSION['admin'] = True;
             }
-            header('location:home.php');
+            if (firstLogon($user_id)){
+                $_SESSION['firstLogon'] = 1;
+            }
+            $_SESSION['update_message_type'] = "success";
+            $_SESSION['update_message'] = "Enjoy!";
+        } else{
+            $_SESSION['update_message_type'] = "danger";
+            $_SESSION['update_message'] = "Login Failed";
         }
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30061640</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <style>
+        .navbar-brand{
+            padding: 20px;
+        }
+        body {
+            background: #f0f0f0; /* Softer background */
+        }
+    </style>
+
+    <script>
+        if (<?php echo !empty($_SESSION['update_message']); ?> && <?php if (isset($_SESSION['firstLogon'])){echo $_SESSION['firstLogon'];} else {echo 0;}?>)
+        {
+            if (<?php echo $_SESSION['update_message'] == 'Enjoy!'; ?>) {
+            setTimeout(function () {
+                window.location.href = "change_password.php";
+            }, 1000);
+            }
+        } else{
+            setTimeout(function() {
+                window.location.href = "home.php";
+            }, 1000);
+        }
+    </script>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="home.php">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<br>
+<h2 style="text-align: center">Login Form</h2>
+<div class="container mt-4">
+    <?php if (isset($_SESSION['update_message'])) { ?>
+        <div class="alert alert-<?php echo $_SESSION['update_message_type']; ?>" role="alert">
+            <?php echo $_SESSION['update_message']; ?>
+        </div>
+        <?php
+        unset($_SESSION['update_message']);
+        unset($_SESSION['update_message_type']);
+    } ?>
+    <div class="card">
+        <div class="card-body">
+            <form action="" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" value="" required>
+                </div>
+                <div class="mb-3">
+                    <label for="pword" class="form-label">Password:</label>
+                    <input type="password" class="form-control" id="pword" name="pword" value="" required>
+                </div>
+                <input type="submit" class='btn btn-primary' value="Submit" name="submit">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
 

@@ -1,8 +1,18 @@
 <?php
 session_start();
 include('../functions.php');
-if (empty($_SESSION['user_id']) && !($_SESSION['admin'])){
+if (empty($_SESSION['user_id'])){
     header('location:home.php');
+}
+
+if (!(isset($_SESSION['admin'])) && !($_SESSION['admin'])){
+    header('location:home.php');
+}
+
+if (!empty($_SESSION['firstLogon'])) {
+    if ($_SESSION['firstLogon'] == 1) {
+        header('location:change_password.php');
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -44,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     $newPermissionLevel = (int) $_POST['permission_level'];
                     try{
                         update_permission($newPermissionLevel, $userId);
-                        $_SESSION['update_message_type'] = "success";  // For a success alert
+                        $_SESSION['update_message_type'] = "success";
                         $_SESSION['update_message'] = "Permissions updated successfully!";
                         header('location: admin.php');
                         exit();
@@ -83,11 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     </style>
     <title>30061640</title>
 </head>
-<script type="text/javascript">
-    function Reload(){
-        document.location = 'admin.php';
-    }
-</script>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="./home.php">Home</a>
@@ -97,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-                <a class="nav-link" href="view.php">View Tasks</a>
+                <a class="nav-link" href="register.php">Register User</a>
             </li>
             <li class=nav-item">
                 <a class="nav-link" href="logout.php">Log Out</a>
@@ -125,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     <form method="POST">
                         <div class="form-group mb-3">
                             <select class="form-select" aria-label="Select option" id="deleteUserMenu" name="deleteUserMenu">
-                                <option value="">Choose...</option>
                                 <?php
                                 $users = active_users();
                                 foreach($users as $user){
@@ -148,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     <form method="POST">
                         <div class="form-group mb-3">
                             <select class="form-select" aria-label="Select option" id="addUserMenu" name="addUserMenu">
-                                <option value="">Choose...</option>
                                 <?php
                                 $users = inactive_users();
                                 foreach($users as $user){

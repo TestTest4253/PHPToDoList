@@ -6,5 +6,5 @@ session_destroy();
 <script>
     setTimeout(function() {
         window.location.href = "home.php";
-    }, 1000); // Redirect after 3 seconds
+    }, 1000);
 </script>
