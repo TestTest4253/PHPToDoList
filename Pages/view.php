@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
             background: #f0f0f0; /* Softer background */
@@ -43,10 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
     <title>30061640</title>
 </head>
-<html>
-<body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
+<body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="home.php">Home</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $due_date = date('l d F Y',strtotime($task[4]));
             $status = $task[6];
             echo '<div class="col-sm-4">
-            <div class="card h-100 shadow-sm'; if($status == 'Done'){echo ' bg-success';} echo '">
+            <div class="card h-100 shadow-sm'; if($status == 'Done'){echo ' bg-success';} elseif($status == 'Backlog'){echo ' bg-warning';} echo '">
                 <div class="card-body">
                     <div class="username-container">' . $username . '</div>
                     <h5 class="card-title">' . $title .' - '.$status . '</h5>
@@ -107,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ?>
     </div>
 </div>
-
+<br>
 <h2 style="text-align: center;">All Tasks</h2>
 <div class="container">
     <div class="row">
@@ -125,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $completed = $task[5];
                 $status = $task[6];
                 echo '<div class="col-sm-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm'; if($status == 'Done'){echo ' bg-success';} elseif($status == 'Backlog'){echo ' bg-warning';} echo '">
                 <div class="card-body">
                     <div class="username-container">' . $username . '</div>
                     <h5 class="card-title">' . $title .' - '.$status . '</h5>
@@ -158,6 +156,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ?>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
-</html>
