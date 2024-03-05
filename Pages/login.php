@@ -30,6 +30,7 @@ if (isset($_POST['submit'])){
         $storedPassword = $array['password'];
         $user_id = $array['user_id'];
         if (password_verify($password, $storedPassword)){
+            session_regenerate_id();
             $_SESSION['user_id'] = $user_id;
             if (is_admin($user_id) == 1){
                 $_SESSION['admin'] = True;
@@ -37,6 +38,7 @@ if (isset($_POST['submit'])){
             if (firstLogon($user_id)){
                 $_SESSION['firstLogon'] = 1;
             }
+            logEvent('User has logged in');
             $_SESSION['update_message_type'] = "success";
             $_SESSION['update_message'] = "Enjoy!";
         } else{

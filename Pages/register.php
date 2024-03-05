@@ -33,6 +33,7 @@ if (isset($_POST['submit'])){
     if ($stmt->execute()){
         $_SESSION['update_message_type'] = "success";
         $_SESSION['update_message'] = "User registered";
+        logEvent('New user registered');
     }else{
         $_SESSION['update_message_type'] = "danger";
         $_SESSION['update_message'] = "Something went wrong!";

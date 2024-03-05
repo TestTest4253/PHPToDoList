@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         if ($success){
             $_SESSION['update_message_type'] = "success";
             $_SESSION['update_message'] = "Task created!";
+            logEvent('New task created');
         } else{
             $_SESSION['update_message_type'] = "danger";
             $_SESSION['update_message'] = "Task failed to create!";

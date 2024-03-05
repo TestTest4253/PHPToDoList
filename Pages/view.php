@@ -2,10 +2,6 @@
 session_start();
 include('../functions.php');
 
-if (empty($_SESSION['user_id'])) {
-    header('location:home.php');
-}
-
 if (!empty($_SESSION['firstLogon'])) {
     if ($_SESSION['firstLogon'] == 1) {
         header('location:change_password.php');
@@ -16,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $taskId = (int)$_POST['task_id'];
     if (isset($_POST['deleteButton'])) {
         delete_task($taskId);
+        logEvent('Task deleted');
         header('refresh:0.1');
     }
 }
@@ -52,12 +49,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="create.php">Create Task</a>
-            </li>
-            <li class=nav-item">
-                <a class="nav-link" href="logout.php">Log Out</a>
-            </li>
+            <?php
+            if (isset($_SESSION['user_id'])){
+                echo '
+                <li class="nav-item">
+                    <a class="nav-link" href="create.php">Create Task</a>
+                </li>
+                <li class=nav-item">
+                    <a class="nav-link" href="logout.php">Log Out</a>
+                </li>';
+            } else{
+                echo '
+                <li class="nav-item">
+                    <a class="nav-link" href="login.php">Login</a>
+                </li>
+                ';
+            }
+            ?>
+
+
         </ul>
     </div>
 </nav>
@@ -66,7 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <div class="row">
         <?php
-        $tasks = collect_tasks();
+        if (isset($_SESSION['user_id'])) {
+            $tasks = collect_tasks();
+        } else{
+            $tasks = [];
+        }
 
         $length = count($tasks);
         for ($x = 0; $x<$length; $x++) {
@@ -110,7 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <div class="row">
         <?php
-        $tasks = all_tasks();
+        if (isset($_SESSION['user_id'])){
+            $tasks = all_tasks();
+        } else{
+            $tasks = guestTasks();
+        }
         $length = count($tasks);
         if ($length > 0) {
             for ($x = 0; $x < $length; $x++) {

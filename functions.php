@@ -96,6 +96,14 @@ function all_tasks(): array
     return $tasks;
 }
 
+function guestTasks(): array
+{
+    $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
+    $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed, priority FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 ORDER BY tasks.priority DESC;';
+    $results = $conn->query($sql);
+    return $results->fetch_all();
+}
+
 function is_admin($user_id){
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
     $sql = 'SELECT Admin FROM methodone WHERE methodone.user_id = ?';
@@ -276,6 +284,19 @@ function IDtoUsername($id){
         $results = $stmt->get_result();
         $rows = $results->fetch_assoc();
         return $rows['username'];
+    }
+    return 0;
+}
+
+function logEvent($event){
+    $conn = connect_db('localhost','webapp_insert','TE1rrJ0M4tKD!x4I','credentialsbt');
+    $currentUser = (int) $_SESSION['user_id'];
+    $ipAddress = $_SERVER['REMOTE_ADDR'];
+    $sql = 'INSERT INTO logs(User_ID, IP_Address, Description) VALUES (?,?,?)';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('iss',$currentUser,$ipAddress,$event);
+    if ($stmt->execute()){
+        return 1;
     }
     return 0;
 }

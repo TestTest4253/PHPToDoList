@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     deleteUser($userId);
                     $_SESSION['update_message_type'] = "success";
                     $_SESSION['update_message'] = "User Deleted!";
+                    logEvent('A user has been made inactive');
                     header('location: admin.php');
                 }catch (Exception $e){
                     echo 'There was an error '. $e;
@@ -39,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     addUser($userId);
                     $_SESSION['update_message_type'] = "success";
                     $_SESSION['update_message'] = "User Added!";
+                    logEvent('A user has been reinstated');
                     header('location: admin.php');
                     exit();
                 }catch (Exception $e){
