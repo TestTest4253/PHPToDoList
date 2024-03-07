@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             case 'modifyUser':
                 if (isset($_POST['user_id']) && isset($_POST['permission_level'])) {
                     $userId = (int) usernameToID($_POST['user_id']);
-                    $newPermissionLevel = (int) $_POST['permission_level'];
+                    $newPermissionLevel = $_POST['permission_level'];
                     try{
                         update_permission($newPermissionLevel, $userId);
                         $_SESSION['update_message_type'] = "success";
@@ -187,8 +187,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 <div class="form-group mb-3">
                     <label for="permission_level">Permission Level:</label>
                     <select class="form-select" id="permission_level" name="permission_level">
-                        <option value="0">User</option>
-                        <option value="1">Admin</option>
+                        <option value="Guest">Guest</option>
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
                     </select>
                 </div>
                 <input type="hidden" name="form_id" value="modifyUser">

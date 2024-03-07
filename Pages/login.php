@@ -38,6 +38,9 @@ if (isset($_POST['submit'])){
             if (firstLogon($user_id)){
                 $_SESSION['firstLogon'] = 1;
             }
+            if (isGuest($user_id)){
+                $_SESSION['guest'] = 1;
+            }
             logEvent('User has logged in');
             $_SESSION['update_message_type'] = "success";
             $_SESSION['update_message'] = "Enjoy!";

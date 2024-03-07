@@ -51,10 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <ul class="navbar-nav ms-auto">
             <?php
             if (isset($_SESSION['user_id'])){
-                echo '
+                if (empty($_SESSION['guest'])){
+                    echo '
                 <li class="nav-item">
                     <a class="nav-link" href="create.php">Create Task</a>
-                </li>
+                </li>';}
+                echo '
                 <li class=nav-item">
                     <a class="nav-link" href="logout.php">Log Out</a>
                 </li>';
@@ -76,12 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <div class="row">
         <?php
-        if (isset($_SESSION['user_id'])) {
-            $tasks = collect_tasks();
-        } else{
-            $tasks = [];
-        }
-
+        $tasks = collect_tasks();
         $length = count($tasks);
         for ($x = 0; $x<$length; $x++) {
             $task = $tasks[$x];
@@ -98,7 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <h5 class="card-title">' . $title .' - '.$status . '</h5>
                     <p class="card-text">' . $contents . '</p>
                     <p class="card-text">' . $due_date . '</p>';
-            echo '
+            if (empty($_SESSION['guest'])){
+                echo '
             <div class="button-container"> 
             <form method="post" action="edit.php">
             <input type="hidden" name="task_id" value="'.$task[1].'">
@@ -113,8 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" name="deleteButton" class="btn btn-danger">Delete</button>
             </form>
             </div>
-            </div> </div> </div>
-            ';
+            ';}
+            echo '</div> </div> </div>';
         }
             ?>
     </div>
@@ -124,11 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <div class="row">
         <?php
-        if (isset($_SESSION['user_id'])){
-            $tasks = all_tasks();
-        } else{
-            $tasks = guestTasks();
-        }
+        $tasks = all_tasks();
         $length = count($tasks);
         if ($length > 0) {
             for ($x = 0; $x < $length; $x++) {

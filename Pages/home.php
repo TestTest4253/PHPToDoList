@@ -43,19 +43,19 @@ if (!empty($_SESSION['firstLogon'])) {
             if (empty($_SESSION['user_id'])){
                 echo '
                 <li class="nav-item">
-                    <a class="nav-link" href="view.php">View Tasks</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="login.php">Login</a>
                 </li>';
 
             }else{
                 echo'
-                
                 <li class="nav-item">
+                    <a class="nav-link" href="view.php">View Tasks</a>
+                </li>';
+                if (empty($_SESSION['guest'])){
+                echo '<li class="nav-item">
                     <a class="nav-link" href="create.php">Create Task</a>
                 </li>
-                ';
+                ';}
                 if (!empty($_SESSION['admin'])) {
                     echo '<li class="nav-item"> <a class="nav-link" href="admin.php">Admin</a>';
                 };

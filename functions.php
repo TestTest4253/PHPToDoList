@@ -96,14 +96,6 @@ function all_tasks(): array
     return $tasks;
 }
 
-function guestTasks(): array
-{
-    $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
-    $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed, priority FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 ORDER BY tasks.priority DESC;';
-    $results = $conn->query($sql);
-    return $results->fetch_all();
-}
-
 function is_admin($user_id){
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
     $sql = 'SELECT Admin FROM methodone WHERE methodone.user_id = ?';
@@ -118,7 +110,30 @@ function is_admin($user_id){
         $row = $results->fetch_assoc();
         $data = $row['Admin'];
     }
-    return $data;
+    if ($data == 'Admin'){
+        return 1;
+    }
+    return 0;
+}
+
+function isGuest($user_id){
+    $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
+    $sql = 'SELECT Admin FROM methodone WHERE methodone.user_id = ?';
+    try{
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $user_id);
+    }catch (Exception $e){
+        echo 'Your error is '.$e;
+    }
+    if ($stmt->execute()){
+        $results = $stmt->get_result();
+        $row = $results->fetch_assoc();
+        $data = $row['Admin'];
+    }
+    if ($data == 'Guest'){
+        return 1;
+    }
+    return 0;
 }
 
 function firstLogon($userId): int{
@@ -253,7 +268,7 @@ function update_permission($newPermissionLevel, $userId){
     if (!$stmt = $conn->prepare($sql)) {
         die('Preparation Error: ' . $conn->error);
     }
-    if (!$stmt->bind_param('ii', $newPermissionLevel, $userId)) {
+    if (!$stmt->bind_param('si', $newPermissionLevel, $userId)) {
         die('Binding Error: ' . $stmt->error);
     }
     if (!$stmt->execute()) {

@@ -12,6 +12,12 @@ if (!empty($_SESSION['firstLogon'])) {
     }
 }
 
+if (!empty($_SESSION['guest'])) {
+    if ($_SESSION['guest'] == 1) {
+        header('location:home.php');
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $taskID = (int) $_POST['task_id'];
     if (isset($_POST['submit'])) {

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include '../functions.php';
 if (!empty($_SESSION['firstLogon'])) {
     if ($_SESSION['firstLogon'] == 1) {
         header('location:change_password.php');
