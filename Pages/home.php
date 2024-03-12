@@ -77,7 +77,7 @@ if (!empty($_SESSION['firstLogon'])) {
     if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == 14){
         echo '<p class = "video-container"><iframe width="560" height="315" src="https://www.youtube.com/embed/MtN1YnoL46Q" title="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe></p>';
     }
-    echo '<pre>' . var_dump($_SESSION) . '</pre>'; ?>
+    //echo '<pre>' . var_dump($_SESSION) . '</pre>'; ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

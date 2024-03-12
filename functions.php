@@ -98,7 +98,7 @@ function all_tasks(): array
 
 function is_admin($user_id){
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
-    $sql = 'SELECT Admin FROM methodone WHERE methodone.user_id = ?';
+    $sql = 'SELECT permissions FROM methodone WHERE methodone.user_id = ?';
     try{
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $user_id);
@@ -108,7 +108,7 @@ function is_admin($user_id){
     if ($stmt->execute()){
         $results = $stmt->get_result();
         $row = $results->fetch_assoc();
-        $data = $row['Admin'];
+        $data = $row['permissions'];
     }
     if ($data == 'Admin'){
         return 1;
@@ -118,7 +118,7 @@ function is_admin($user_id){
 
 function isGuest($user_id){
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
-    $sql = 'SELECT Admin FROM methodone WHERE methodone.user_id = ?';
+    $sql = 'SELECT permissions FROM methodone WHERE methodone.user_id = ?';
     try{
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $user_id);
@@ -128,7 +128,7 @@ function isGuest($user_id){
     if ($stmt->execute()){
         $results = $stmt->get_result();
         $row = $results->fetch_assoc();
-        $data = $row['Admin'];
+        $data = $row['permissions'];
     }
     if ($data == 'Guest'){
         return 1;
@@ -264,7 +264,7 @@ function addUser($userId){
 
 function update_permission($newPermissionLevel, $userId){
     $conn = connect_db('localhost','webapp_update','*j8hBQt3@i-m7ynQ', 'credentialsbt');
-    $sql = 'UPDATE methodone SET Admin = ? WHERE user_id = ?';
+    $sql = 'UPDATE methodone SET permissions = ? WHERE user_id = ?';
     if (!$stmt = $conn->prepare($sql)) {
         die('Preparation Error: ' . $conn->error);
     }

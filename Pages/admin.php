@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                         update_permission($newPermissionLevel, $userId);
                         $_SESSION['update_message_type'] = "success";
                         $_SESSION['update_message'] = "Permissions updated successfully!";
+                        logEvent('A user had permissions changed');
                         header('location: admin.php');
                         exit();
                     }catch(Exception $e){
