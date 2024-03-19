@@ -8,6 +8,10 @@ function connect_db($server, $user, $pass, $database){
     return $conn;
 }
 
+function sanitise($input): string
+{
+    return htmlspecialchars(trim(stripslashes($input)));
+}
 function create_task($user, $title, $contents, $date, $status): int
 {
     $conn = connect_db('localhost','webapp_insert', 'TE1rrJ0M4tKD!x4I','credentialsbt');
@@ -60,11 +64,11 @@ function delete_task($remove_ID): int
 function collect_tasks(): array
 {
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
-    $user_id = $_SESSION['user_id'];
+    $user_id = (int) $_SESSION['user_id'];
     $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed, priority FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 AND methodone.user_id = ? ORDER BY tasks.priority DESC;';
     try{
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('s', $user_id);
+        $stmt->bind_param('i', $user_id);
     }catch(Exception $e){
         echo 'Your error is '.$e;
     }
@@ -79,11 +83,11 @@ function collect_tasks(): array
 function all_tasks(): array
 {
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
-    $user_id = $_SESSION['user_id'];
+    $user_id = (int) $_SESSION['user_id'];
     $sql = 'SELECT tasks.User_ID, Task_ID, Title, Contents, Due_Date, Completed, priority FROM tasks INNER JOIN methodone ON methodone.user_id = tasks.User_ID WHERE tasks.deleted = 0 AND methodone.user_id != ? ORDER BY tasks.priority DESC;';
     try{
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('s', $user_id);
+        $stmt->bind_param('i', $user_id);
     }catch(Exception $e){
         echo 'Your error is '.$e;
     }

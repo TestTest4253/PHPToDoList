@@ -14,8 +14,8 @@ if ($conn-> connect_error){
     die('Connection Failed: '.$conn->connect_error);
 }
 if (isset($_POST['submit'])){
-    $username = $_POST['username'];
-    $password = $_POST['pword'];
+    $username = sanitise($_POST['username']);
+    $password = sanitise($_POST['pword']);
     $sql = 'SELECT user_id,password from credentialsbt.methodone WHERE username = ?';
     try{
         $stmt = $conn->prepare($sql);

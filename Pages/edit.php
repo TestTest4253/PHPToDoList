@@ -21,8 +21,8 @@ if (!empty($_SESSION['guest'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $taskID = (int) $_POST['task_id'];
     if (isset($_POST['submit'])) {
-        $title = $_POST['taskTitle'];
-        $content = $_POST['taskContent'];
+        $title = sanitise($_POST['taskTitle']);
+        $content = sanitise($_POST['taskContent']);
         $status = $_POST['status'];
         $dueDate = date('Y-m-d', strtotime($_POST['dueDate']));
         $user = usernameToID($_POST['user']);

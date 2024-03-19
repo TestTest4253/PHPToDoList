@@ -70,6 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     }
                 }
                 break;
+            case 'addTask':
+                $taskId = (int) $_POST['task_id'];
+                break;
         }
 
     }
@@ -195,6 +198,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 </div>
                 <input type="hidden" name="form_id" value="modifyUser">
                 <button type="submit" class="btn btn-primary" name="submit">Update Permissions</button>
+            </form>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header">Reinstate Task</div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group mb-3">
+                    <label for="user_select">Select Task:</label>
+                    <select class="form-select" id="task_select" name="task_id">
+                        <?php
+                        $tasks = active_users();
+                        foreach ($tasks as $task){
+                            echo '<option value="'.$task.'">'.$task.'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+                <input type="hidden" name="form_id" value="addTask">
+                <button type="submit" class="btn btn-primary" name="submit">Reinstate Task</button>
             </form>
         </div>
     </div>

@@ -8,6 +8,10 @@ if (!empty($_SESSION['firstLogon'])) {
     }
 }
 
+if (empty($_SESSION['user_id'])){
+    header('location:home.php');
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $taskId = (int)$_POST['task_id'];
     if (isset($_POST['deleteButton'])) {

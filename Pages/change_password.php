@@ -3,25 +3,34 @@ session_start();
 include('../functions.php');
 
 if (isset($_POST['submit'])){
-    $password = $_POST['pword'];
-    $confirm = $_POST['pwordconfirm'];
+    $password = sanitise($_POST['pword']);
+    $confirm = sanitise($_POST['pwordconfirm']);
     if ($password === $confirm) {
         if (checkPassword($_SESSION['user_id'], $_POST['pword'])) {
             $_SESSION['update_message_type'] = "danger";
             $_SESSION['update_message'] = "Password already in use";
         } else {
-            if (submitPassword((int) $_SESSION['user_id'],$password)) {
-                $conn = connect_db('localhost','webapp_update','*j8hBQt3@i-m7ynQ', 'credentialsbt');
-                $sql = 'UPDATE methodone set firstLogon = 0 WHERE user_id = ?';
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param('i',$_SESSION['user_id']);
-                $stmt->execute();
-                $_SESSION['update_message_type'] = "success";
-                $_SESSION['update_message'] = "Password updated";
-                $_SESSION['firstLogon'] = 0;
-            } else{
-                $_SESSION['update_message_type'] = "danger";
-                $_SESSION['update_message'] = "Password failed to update";
+            if (preg_match("/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,20}$/", $password)){
+                if (submitPassword((int)$_SESSION['user_id'], $password)) {
+                    $conn = connect_db('localhost', 'webapp_update', '*j8hBQt3@i-m7ynQ', 'credentialsbt');
+                    $sql = 'UPDATE methodone set firstLogon = 0 WHERE user_id = ?';
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param('i', $_SESSION['user_id']);
+                    $stmt->execute();
+                    $_SESSION['update_message_type'] = "success";
+                    $_SESSION['update_message'] = "Password updated";
+                    $_SESSION['firstLogon'] = 0;
+                } else {
+                    $_SESSION['update_message_type'] = "danger";
+                    $_SESSION['update_message'] = "Password failed to update";
+                }
+            } else {
+                $_SESSION['update_message_type'] = 'danger';
+                $_SESSION['update_message'] = 'Password should contain:<br>
+                                                 a digit<br>
+                                                 a special character<br> 
+                                                 a capital letter<br>
+                                                 8-20 characters long';
             }
         }
     } else{
@@ -48,7 +57,7 @@ if (isset($_POST['submit'])){
         if (<?php echo isset($_SESSION['update_message']); ?>) {
             setTimeout(function() {
                 window.location.href = "home.php";
-            }, 1500);
+            }, 5000);
         }
     </script>
 </head>
@@ -69,14 +78,6 @@ if (isset($_POST['submit'])){
 <br>
 <h2 style="text-align: center">Change your password</h2>
 <div class="container mt-4">
-    <?php if (isset($_SESSION['update_message'])) { ?>
-        <div class="alert alert-<?php echo $_SESSION['update_message_type']; ?>" role="alert">
-            <?php echo $_SESSION['update_message']; ?>
-        </div>
-        <?php
-        unset($_SESSION['update_message']);
-        unset($_SESSION['update_message_type']);
-    } ?>
     <div class="card">
         <div class="card-body">
             <form action="" method="post">
@@ -92,6 +93,14 @@ if (isset($_POST['submit'])){
             </form>
         </div>
     </div>
+    <?php if (isset($_SESSION['update_message'])) { ?>
+        <div class="alert alert-<?php echo $_SESSION['update_message_type']; ?>" role="alert">
+            <?php echo $_SESSION['update_message']; ?>
+        </div>
+        <?php
+        unset($_SESSION['update_message']);
+        unset($_SESSION['update_message_type']);
+    } ?>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

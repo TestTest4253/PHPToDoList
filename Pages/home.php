@@ -74,7 +74,7 @@ if (!empty($_SESSION['firstLogon'])) {
 <div class="container">
     <h1 style="text-align: center">Welcome<?php if (!empty($_SESSION['user_id'])){echo ' '.IDtoUsername($_SESSION['user_id']);} ?>!</h1>
     <?php
-    if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == 14){
+    if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == usernameToID('AoPingu')){
         echo '<p class = "video-container"><iframe width="560" height="315" src="https://www.youtube.com/embed/MtN1YnoL46Q" title="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe></p>';
     }
     //echo '<pre>' . var_dump($_SESSION) . '</pre>'; ?>
