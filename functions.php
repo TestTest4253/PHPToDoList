@@ -61,6 +61,44 @@ function delete_task($remove_ID): int
     return 0;
 }
 
+function update_task($task_id){
+    $conn = connect_db('localhost','webapp_update','*j8hBQt3@i-m7ynQ', 'credentialsbt');
+    $sql = 'UPDATE tasks set tasks.deleted = 0 where tasks.Task_ID = ?';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $task_id);
+
+    if ($stmt->execute()){
+        return 1;
+    } else {
+        return 0;
+    }
+
+}
+
+function inactive_tasks(): array
+{
+    $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');
+    $sql = 'SELECT tasks.Task_ID, Title FROM tasks WHERE tasks.deleted = 1 ORDER BY creation_date DESC';
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt->execute()){
+        $results = $stmt->get_result();
+        $rows = $results->fetch_all();
+
+        $inactiveTasks = array(); // Array to store both ID and Title
+
+        foreach ($rows as $row) {
+            $inactiveTasks[] = array(
+                'id' => $row[0],
+                'title' => $row[1]
+            );
+        }
+
+        return $inactiveTasks;
+    } else {
+        return array(); // Return an empty array if the query fails
+    }
+}
 function collect_tasks(): array
 {
     $conn = connect_db('localhost','webapp_select','P_k(x[1!gDObxh7-', 'credentialsbt');

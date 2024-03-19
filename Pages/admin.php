@@ -72,7 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 break;
             case 'addTask':
                 $taskId = (int) $_POST['task_id'];
-                break;
+                try{
+                    update_task($taskId);
+                    $_SESSION['update_message_type'] = 'success';
+                    $_SESSION['update_message'] = 'Task updated successfully';
+                    logEvent('An event has been reinstated');
+                    header('location: admin.php');
+                }catch (Exception $e){
+                    echo 'There was an error '.$e;
+                    $_SESSION['update_message_type'] = 'danger';
+                    $_SESSION['update_message'] = 'Task failed to update';
+                    header('location: admin.php');
+                }
+
         }
 
     }
@@ -209,9 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                     <label for="user_select">Select Task:</label>
                     <select class="form-select" id="task_select" name="task_id">
                         <?php
-                        $tasks = active_users();
+                        $tasks = inactive_tasks();
                         foreach ($tasks as $task){
-                            echo '<option value="'.$task.'">'.$task.'</option>';
+                            echo '<option value="'.$task['id'].'">'.$task['title'].'</option>';
                         }
                         ?>
                     </select>
